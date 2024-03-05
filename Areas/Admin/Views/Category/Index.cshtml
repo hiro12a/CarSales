@@ -1,0 +1,45 @@
+﻿<!--Adds margin horizontaly inside-->
+<div class="card shadow border-0 my-4">
+    <!--Adds padding horizontaly inside-->
+    <!--Adds a heading-->
+    <div class="card-header bg-secondary bg-gradient py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <!--Adds padding horizontaly inside-->
+                <h2 class="text-white py-2">Car Types</h2>
+            </div>
+        </div>
+    </div>
+    
+    <!--Adds a body-->
+    <div class="card-body p-4">
+        <!--For the create new button-->
+        <div class="row pb-3">
+            <!--Adds an empty col-6 so that the create new button will be able to go to the far right-->
+            <div class="col-6">
+
+            </div>
+            <div class="col-6 text-end">
+                <a asp-controller="Category" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create New Category
+                </a>
+            </div>
+        </div>
+        <!--A table to display the categories-->
+        <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+            <!--Needs to go from thead then to tr then to th-->
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>DisplayOrder</td>
+                    <td></td> <!--Need an empty row to display the edit/delete button-->
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!--Section for script so that it can access the Category script-->
+@section scripts{
+    <script src="~/js/category.js"></script>
+}

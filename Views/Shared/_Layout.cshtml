@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CarSales.styles.css" asp-append-version="true" />
+
+    <!--Lets us use bootstrap buttons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+    <!--Lets us use database API-->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+    <!--Lets us use toastr API-->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
+    <!--Lets us use fontawesome icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!--For Tab Icon-->
+    <link rel="icon" href="~/images/car-icon-png-25.png" type="image/x-icon" />
+
+</head>
+<body class="bg-light">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light py-4 shadow position-relative">
+            <div class="container">
+                <!--Logo-->
+                <!--Order lg will change the order of its content-->
+                <a class="navbar-brand d-flex justify-content-between align-items-center order-lg-0" asp-area="Customer" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-car-front-fill"></i>
+                    <span class="fm-lighter ms-2 text-up">CarSales</span>
+                </a>
+
+                <!--Cart and Search Icon-->
+                <!--The order lg will make this seciton in the end when not in mobile-->
+                <!--It will be in the midde when on mobile-->
+                <div class="order-lg-2">
+                    <!--For Cart-->
+                    <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="btn border-0 border-white position-relative">
+                        <i class="bi bi-cart-fill"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge" style="background-color:#f63e4e;">
+                            @await Component.InvokeAsync("ShoppingCart")
+                       </span>
+                    </a>
+                </div>
+
+                <!--For Mobile Version-->
+                <!--The icon that will show up when the browser width is below a certain distance, aka for mobile-->
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!--The order lg will make this section to be in the middle when not in mobile version-->
+                <div class="collapse navbar-collapse order-lg-1">
+                    <!--Display navigational items-->
+                    <ul class="navbar-nav mx-auto text-center">
+                        <!--PX is for horizontal and PY is for vertical-->
+                        <li class="nav-item px-2 py-2">
+                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Shop">Shop</a>
+                        </li>
+                        <li class="nav-item px-2 py-2">
+                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="About">About</a>
+                        </li>
+                        <li class="nav-item px-2 py-2">
+                            <a class="nav-link" href="@Url.Action("Index","Order", new {Area="Admin"})">Manage Order</a>
+                        </li>
+                        <!--If the user is an Admin-->
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <!--Create a dropdown for User Management-->
+                            <li class="nav-item dropdown px-2 py-2">
+                                <a class="nav-link dropdown-toggle text-uppercase" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    User Management
+                                </a>
+                                <ul class="dropdown-menu border-0 text-center bg-light">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">Manage Users</a>
+                                    </li>
+                                    <!--Since identity is a razor page, have to use asp-page to access it-->
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="@Url.Action("Register","User", new { Area = "Admin"})">Create User</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!--Create another dropdown for Content Management-->
+                            <li class="nav-item dropdown px-2 py-2">
+                                <a class="nav-link dropdown-toggle text-uppercase" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <ul class="dropdown-menu border-0 text-center bg-light">
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Index">Cars List</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        <!--For login/register-->
+                        <partial name="_LoginPartial" />
+                    </ul>
+                </div>
+            </div>
+            
+        </nav>
+    </header>  
+    <div> <!--Used to make the background image go full width-->
+        @RenderBody()
+    </div>
+
+    <footer class="border-top text-muted w-100 bg-black" style="bottom:0;margin-top:auto;">
+        <!--Footer-->
+        <div class="bg-dark py-3 subscribe">
+            <!--We always need a container first-->
+            <div class="container pt-4 text-light">
+                <!--For the subscribe option-->
+                <div class="row">
+                    <!--Styled this is css-->
+                    <div class="col-lg-9 m-auto text-center">
+                        <h1>Subscribe To Our Newsletter</h1>
+                        <!--The px moves the placeholder text to the right-->
+                        <input type="text" class="bg-black mt-3 text-light px-2" placeholder="Enter Your Email" />
+                        <button type="submit" class="btn2">Submit</button>
+                    </div>
+                </div>
+                <!--Then a row-->
+                <div class="row pt-5">
+                    <!--The col lg 13 moves it to the center-->
+                    <div class="col-lg-13">
+                        <div class="row">
+                            <!--The col lg 3 adds spacing between the columns-->
+                            <!--The list unstyled makes it so that we don't have to see the dot on lists-->
+                            <div class="col-lg-3 py-3">
+                                <h4 class="pb-2">Shop By Category</h4>
+                                <ul class="list-unstyled">
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("Shop","Home")?type=truck">Trucks</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("Shop","Home")?type=minivan">Minivan</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("Shop","Home")?type=sedan">Sedan</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("Shop","Home")?type=suv">SUVs</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("Shop","Home")?type=van">Van</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-3 py-3">
+                                <h4 class="pb-2">Resources</h4>
+                                <ul class="list-unstyled">
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" asp-controller="" asp-action="">Blog</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" asp-controller="" asp-action="">FAQ</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-decoration-none text-muted" asp-controller="" asp-action="">Contact Us</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-3 py-3">
+                                <h4 class="pb-2">About</h4>
+                                <ul class="list-unstyled">
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" href="@Url.Action("About","Home","Customer")">CarSales, Inc.</a>
+                                    </li>
+                                    <li class="pb-2">
+                                        <a class="text-decoration-none text-muted" asp-controller="" asp-action="">Team</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-decoration-none text-muted" asp-controller="" asp-action="">Careers</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--Social Media-->
+                            <!--Font size increases the size of the icons-->
+                            <div class="col-lg-3 py-3" style="font-size:2.5rem;">
+                                <h5 class="pb-2">Social Media</h5>
+                                <!--Color:Inherit will make it go back to its default color-->
+                                <!--Target="_blank" opens a new tab with the link-->
+                                <a href="https://www.facebook.com" target="_blank" class="me-2" style="color:inherit"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.twitter.com" target="_blank" class="me-2" style="color:inherit"><i class="bi bi-twitter"></i></a>
+                                <a href="https://www.instagram.com" target="_blank" class="me-2" style="color:inherit"><i class="bi bi-instagram"></i></a>
+                                <a href="https://www.pinterest.com" target="_blank" class="me-2" style="color:inherit"><i class="bi bi-pinterest"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Footer Text-->
+                <p class="pt-3" style="font-size:12px">
+                    For questions about the CarSales Auto Buying Service please call <a href="tel:1855845865" class="text-muted">+1-855-845-865</a>.
+                    <br />
+                    Certified Dealers are contractually obligated by CarSales to meet certain customer service requirements and complete the CarSales Dealer Certification Program.
+                    <br />
+                    CarSales is not responsible for any damages to the car after a period of 30 days. Unless otherwise noted, all vehicles shown on this website are offered for sale by licensed motor vehicle dealers and CarSales.
+                    <br />
+                    All vehicles are subject to prior sale. By accessing this website, you agree to the TrueCar Terms of Service and Privacy Policy.
+                </p>
+
+            </div>
+            <hr class="bg-white" />
+            <!--The copy; is for the (c) of copyright-->
+            <p class="text-center text-white">Copyright &copy;2023 All rights not reserved | Vehicle photos &copy; Images &copy; and everything included here</p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Lets us use database API-->
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+
+    <!--Lets us use Sweet Alert-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--Lets us use toastr api-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    
+    <!--Lets us use the tiny textbox-->
+    <script src="https://cdn.tiny.cloud/1/g28lhnxtlihu4l4a381gw7tz47voznshwbi10lmsvlekrfme/tinymce/6/tinymce.min.js" referrerpolicy="origin">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

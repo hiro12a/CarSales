@@ -1,0 +1,49 @@
+﻿<!--My increase vertical outside-->
+<div class="card shadow border-0 my-4">
+    <!--Py Increase horizontally inside-->
+    <!--Card Header-->
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <!--Py Increase horizontally inside-->
+                <h2 class="text-white py-2">Cars List</h2>
+            </div>
+        </div>
+    </div>
+
+    <!--Card Body-->
+    <div class="card-body">
+        <!--For the creation button-->
+        <div class="row pb-3">
+            <!--Needs an empty div to so that the other div can go to the end-->
+            <div class="col-6">
+            </div>
+            <!--Button to create new-->
+            <div class="col-6 text-end">
+                <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add New Cars
+                </a>
+            </div>
+        </div>
+
+        <!--Actual body to display all the products-->
+        <table id="tblData" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Year</td>
+                    <td>Make</td>
+                    <td>Model</td>
+                    <td>Price</td>
+                    <td>Body</td>
+                    <td></td> <!--Empty table data for the edit/delete button-->
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!--Scripts Section-->
+@section Scripts{
+    <script src="~/js/product.js"></script>
+}

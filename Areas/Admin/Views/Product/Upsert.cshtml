@@ -1,0 +1,152 @@
+﻿@model ProductVM
+
+<!--my increases horizontally outside-->
+<div class="card shadow border-0 my-4">
+    <!--py increases horizontally inside-->
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <!--Checks the id to see whether to use update or create-->
+                <h2 class="text-white py-2"> @(Model.Product.Id != 0 ? "Update" : "Add") Car Details</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <!--Enctpye part allows us to upload images-->
+        <form method="post" class="row" enctype="multipart/form-data">
+            <!--Needs a hidden id field so that it can know which one this is-->
+            <input asp-for="Product.Id" hidden />
+            <div class="row">
+                <!--Display the images-->
+                <div class="col-6">
+                    @if (Model.Product.Images != null && Model.Product.Images.Count > 0)
+                    {
+                        <div id="carouselExampleIndicators" class="carousel  slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+
+                                <!--Index will automatically give a numeric value-->
+                                @foreach (var imageWithIndex in Model.Product.Images.Select
+                                ((image, index) => new { Image = image, Index = index }))
+                                {
+                                    <!--The class="(imageWithIndex.Index == 0 ? "active" : "")" lets 0 active-->
+                                    <button hidden type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@imageWithIndex.Index"
+                                            class="@(imageWithIndex.Index==0?"active":"")" aria-current="true" aria-label="Slide 1"></button>  
+                                }
+
+                            </div>
+                            <div class="carousel-inner">
+                                @foreach (var imageWithIndex in Model.Product.Images.Select
+                                ((image, index) => new { Image = image, Index = index }))
+                                {
+                                    <div class="@(imageWithIndex.Index==0?"carousel-item active":"carousel-item")">
+                                        
+                                        <div class="p-1 m-2 text-center">
+                                            <!--Display the image-->
+                                            <img src="@imageWithIndex.Image.ImageUrl" class="d-block" style="width:100%" alt="...">
+                                            
+                                            <!--Delete button for the image-->
+                                            <!--The asp action lets use the deletImage section of the script-->
+                                            <a asp-action="DeleteImage" class="btn btn-danger" asp-route-imageId="@imageWithIndex.Image.Id">
+                                                <i class="bi bi-trash-fill"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <!--The previous and next button-->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+
+                    }
+                </div>
+                <div class="col-6">
+                    <!--col-12 uses up the whole row-->
+                    <div class="border p-3">
+                        <div class="form-floating py-2 col-12">
+                            <!--Form-floating allows it to be stylized-->
+                            <input asp-for="Product.Year" class="form-control border-0 shadow" />
+                            <label asp-for="Product.Year" class="ms-2"></label>
+                            <span asp-validation-for="Product.Year" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Product.Make" class="form-control border-0 shadow" />
+                            <label asp-for="Product.Make" class="ms-2"></label>
+                            <span asp-validation-for="Product.Make" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Product.Model" class="form-control border-0 shadow" />
+                            <label asp-for="Product.Model" class="ms-2"></label>
+                            <span asp-validation-for="Product.Model" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Product.Miles" class="form-control border-0 shadow" />
+                            <label asp-for="Product.Miles" class="ms-2"></label>
+                            <span asp-validation-for="Product.Miles" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Product.Price" class="form-control border-0 shadow" />
+                            <label asp-for="Product.Price" class="ms-2"></label>
+                            <span asp-validation-for="Product.Price" class="text-danger"></span>
+                        </div>
+
+                        <!--Display the category-->
+                        <div class="form-floating py-2 col-12">
+                            <!--Find the category by category id and display it-->
+                            <select asp-for="@Model.Product.CategoryId" asp-items="@Model.CategoryList" class="form-select border-0 shadow">
+                                <!--Doesn't allow users to select the Select Category option-->
+                                <option disabled selected>--Select Category--</option>
+                            </select>
+                            <label asp-for="Product.CategoryId" class="ms-2"></label>
+                            <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+                        </div>
+
+                        <!--Upload Image-->
+                        <div class="form-floating py-2 col-12">
+                            <!--Multiple allows user to select multiple images-->
+                            <input type="file" name="files" class="form-control border-0 shadow" multiple/>
+                            <label asp-for="Product.Images" class="ms-2"></label>
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <!--Gives it a row of its own so that it doesn't collide-->
+                        <div class="col-6 col-md-5">
+                            <!--col-md-3 sizes it while the col-6 only lets it take up halfway-->
+                            <!--Check id to see whether to create or update-->
+                            @if (Model.Product.Id != 0)
+                            {
+                                <button type="submit" class="btn btn-primary form-control">Update</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary form-control">Create</button>
+                            }
+                        </div>
+                        <!--Go back to main company page-->
+                        <div class="col-6 col-md-6">
+                            <!--btn-outline-primary makes it glow blue when hovered-->
+                            <a asp-controller="Product" asp-action="Index" class="btn btn-outline-primary border  form-control">
+                                Back to List
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

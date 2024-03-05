@@ -1,0 +1,24 @@
+﻿@inject UserManager<ApplicationUser> userManager
+@inject SignInManager<ApplicationUser> signInManager
+<ul class="navbar-nav px-2 py-2">
+    <!--Check if user is signed in-->
+    @if (signInManager.IsSignedIn(User))
+    {
+        <!--Create a dropdown menu-->
+        <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Hello @userManager.GetUserName(User).Replace("@carsales.com", "").ToUpper()</a>
+
+            <ul class="dropdown-menu bg-light">
+                <li class="nav-item text-center">
+                    <a href="@Url.Action("Logout","User", new { area = "admin" })" class="nav-link">Logout</a>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a a href="@Url.Action("Login","User", new { Area = "Admin"})" class="nav-link">Login/Register</a>
+        </li>
+    }
+</ul>

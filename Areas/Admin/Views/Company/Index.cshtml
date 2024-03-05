@@ -1,0 +1,39 @@
+﻿<!--my increases horizontally outside-->
+<div class = "card shadow border-0 my-4">
+    <!--py increases horizontally inside-->
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="col-12 text-center">
+            <!--py increases horizontally inside-->
+            <h2 class="text-white py-2">Company List</h2> 
+        </div>
+    </div>
+    <div class="card-body p-4"> <!--Add padding-->
+        <div class="row pb-2">
+            <div class="col-6">
+                <!--Empty space so that the create new company button can go to the right hand side-->
+            </div>
+            <div class="col-6 text-end">
+                <!--Goes to the upsert page-->
+                <a asp-controller="Company" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>  Create New Company
+                </a>
+            </div>
+        </div>
+        <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/company.js"></script>
+}

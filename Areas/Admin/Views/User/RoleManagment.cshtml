@@ -1,0 +1,101 @@
+﻿@model RoleManagerVM
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Manage User</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <input asp-for="ApplicationUser.Id" hidden />
+            <div class="border p-3">
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.Name" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.Name" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.Id" disabled class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.Id" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select border-0 shadow"></select>
+                    <label asp-for="ApplicationUser.Role" class="ms-2"></label>
+                </div>
+                <!--Make the companyList invisibile if the user is not in a company role-->
+                @{
+                    var companyVisible = "display:none;";
+                }
+                @if (Model.ApplicationUser.Role == SD.Role_Company)
+                {
+                    companyVisible = "display:block;";
+                }
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="ApplicationUser.CompanyId" style="@companyVisible" asp-items="@Model.CompanyList" class="form-select border-0 shadow">
+                    </select>
+                </div>
+
+                <!--Update everything else-->
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.PhoneNumber" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.PhoneNumber" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.StreetAddress" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.StreetAddress" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.City" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.City" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.State" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.State" class="ms-2"></label>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ApplicationUser.PostalCode" class="form-control border-0 shadow" />
+                    <label asp-for="ApplicationUser.PostalCode" class="ms-2"></label>
+                </div>
+                <div class="pt-3 d-flex">
+                    <div>
+                        <button type="submit" class="btn btn-primary" style="width:200px;">Update</button>
+                    </div>
+                    <div>
+                        <a asp-action="Index" class="btn btn-outline-primary border mx-2" style="width:250px">
+                            Back to List
+                        </a>
+                    </div>
+
+                    <!--Delete the user-->
+                    <div class="ms-auto">
+                        <a href="@Url.Action("Delete","User", new{ id = Model.ApplicationUser.Id})" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+        $(document).ready(function () {
+            $('#ApplicationUser_Role').change(function () {
+                var selection = $('#ApplicationUser_Role Option:Selected').text();
+                if (selection == 'Company') {
+                    $('#ApplicationUser_CompanyId').show();
+                }
+                else {
+                    $('#ApplicationUser_CompanyId').hide();
+                }
+            })
+        })
+    </script>
+}

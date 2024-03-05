@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Product>
+@{
+    var type = Context.Request.Query["type"];  
+    var truck = "text-black";
+    var minivan = "text-black";
+    var suv = "text-black";
+    var sedan = "text-black";
+    var hatchback = "text-black";
+    var all = "text-black";
+
+    switch (type)
+    {
+        case "truck":
+            truck = "active text-white bg-primary";
+            break;
+        case "minivan":
+            minivan = "active text-white bg-primary";
+            break;
+        case "suv":
+            suv = "active text-white bg-primary";
+            break;
+        case "sedan":
+            sedan = "active text-white bg-primary";
+            break;
+        case "hatchback":
+            hatchback = "active text-white bg-primary";
+            break;
+        default:
+            all = "active text-white bg-primary";
+            break;
+    }
+}
+﻿@{
+    ViewData["Title"] = "Shop";
+}
+
+<div class="py-5 px-3" style="font-family:sans-serif">
+    <div class="row">
+        <div class="col-sm-3 pb-3">
+            <div class="card">
+                <div class="card-body" style="background-color: gainsboro">
+                   <h3 class="fw-bold text-center">Categories</h3>     
+                </div>
+                <!--Filtering System-->
+                <ul class="list-group list-unstyled fs-6 carCat">
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="all">
+                        <li class="list-group-item @all">All</li>
+                    </a>
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="truck">
+                        <li class="list-group-item @truck">Truck</li>
+                    </a>
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="minivan">
+                        <li class="list-group-item @minivan">Minivan/Vans</li>
+                    </a>
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="sedan">
+                        <li class="list-group-item @sedan">Sedan</li>
+                    </a>
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="suv">
+                        <li class="list-group-item @suv">SUV</li>
+                    </a>
+                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="van">
+                    <li class="list-group-item @hatchback">Hatchback</li>
+                    </a>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <form method="get" class="pb-3">
+                <div class="input-group">
+                    <input type="search" name="type" placeholder="Search for cars" class="form-control" />
+                    <div class="input-group-append">
+                        <button type="submit" value="Search" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-lg-4 pb-3">
+                        <div class="card p-2">
+                            <div class="card-body text-center">
+                                <!--Get the image and display it-->
+                                @if (product.Images != null && product.Images.Count > 0)
+                                {
+                                    <img src="@product.Images.FirstOrDefault().ImageUrl" class="card-img-top rounded" style="width:100%">
+                                }
+                                else
+                                {
+                                    <!--Does not have an image so use the placeholder-->
+                                    <img src="https://placehold.co/500x600/png" class="card-img-top rounded" />
+                                }
+
+                                <!--Product Details-->
+                                <h4 class="pt-3 head1">@product.Year @product.Make @product.Model</h4>
+                                <p class="per1">@product.Miles.ToString("n") Mi.</p>
+                                <h4 class="head1 text-success pb-2">@product.Price.ToString("c")</h4>
+
+                                <!--Details-->
+                                <a class="btnDetails btn" asp-action="Details" asp-route-productId="@product.Id">Check Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

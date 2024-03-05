@@ -1,0 +1,315 @@
+﻿@model ShoppingCart
+<form method="post">
+    <input hidden asp-for="ProductId" />
+    <div class="container py-5" style="left:0">
+        <div class="row">
+            <div class="col-6">
+                @if (Model.Product.Images != null && Model.Product.Images.Count > 0)
+                {
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+
+                            <!--Index will automatically give a numeric value-->
+                            @foreach (var imageWithIndex in Model.Product.Images.Select
+                           ((image, index) => new { Image = image, Index = index }))
+                            {
+                                <!--The class="(imageWithIndex.Index == 0 ? "active" : "")" lets 0 active-->
+                                <button hidden type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@imageWithIndex.Index"
+                                        class="@(imageWithIndex.Index==0?"active":"")" aria-current="true" aria-label="Slide 1"></button>
+                            }
+
+                        </div>
+                        <div class="carousel-inner">
+                            @foreach (var imageWithIndex in Model.Product.Images.Select
+                           ((image, index) => new { Image = image, Index = index }))
+                            {
+                                <div class="@(imageWithIndex.Index==0?"carousel-item active":"carousel-item")">
+
+                                    <div class="p-1 m-2 text-center">
+                                        <!--Display the image-->
+                                        <img src="@imageWithIndex.Image.ImageUrl" class="d-block w-100" style="left:0;width:100%" alt="...">
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <!--The previous and next button-->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                }
+            </div>
+            <!--Details-->
+            <div class="col-6">
+                <!--Name and Price-->
+                <div class="card mb-2" style="border-radius:15px;">
+                    <div class="card-body">
+                        <!--For Name and Price-->
+                        <div class="row">
+                            <h4>@Model.Product.Year @Model.Product.Make @Model.Product.Model</h4>
+                            <p class="text-success">@Model.Product.Price.ToString("c")</p>
+                        </div>
+
+                        <!--For deal and rating-->
+                        <div class="row">
+                            <div class="col-6">
+                                <i class="bi bi-arrow-right-circle-fill text-success"></i> <span class="text-uppercase semi-bold">Fair Deal</span>
+                                <p class="text-muted">Below market price</p>
+                            </div>
+                            <div class="col-6 text-warning">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <p class="text-muted">Dealer Rating</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Chat with an agent-->
+                <div class="card mb-2" style="border-radius:15px;">
+                    <div class="card-body">
+                        <div class="row">
+                            <!--Text-->
+                            <div class="col-6">
+                                <h4>Chat Us</h4>
+                            </div>
+                            <!--Chat button-->
+                            <div class="col-6 d-flex justify-content-end">
+                                <button class="btn btn-primary"><i class="bi bi-chat-square"></i> Chat</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Purhcase Car-->
+                <div class="card pb-0" style="border-radius:15px;">
+                    <div class="card-body m-0">
+                        <h4>Buy with confidence</h4>
+                        <ul class="p-0 list-unstyled">
+                            <li>1. Fast and Secure payment</li>
+                            <li>2. 30 day money back guarantee</li>
+                            <li>3. Choose pickup or delivery</li>
+                        </ul>
+                        <button type="submit" class="btn btnShop w-100 rounded-0">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <!--Car Details-->
+        <div class="row pt-5">
+            <div class="line1 w-100"></div>
+            <h1 class="pt-3">Features</h1>
+            <!--Left Row-->
+            <div class="col-6 pt-4 position-relative">
+                <!--Mileage-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="bi bi-speedometer featuresStyle"></i>
+                        </div>
+                       
+                        <div class="col-11" style="padding-left:40px">
+                            <h3>Mileage</h3>
+                            <p class="text-muted fs-6">@Model.Product.Miles.ToString("n")</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Exterior Color-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="droplet svg"></i>
+                        </div>
+                        
+                        <div class="col-11" style="padding-left:40px">
+                            <h3>Exterior Color</h3>
+                            <p class="text-muted fs-6">Black</p>
+                        </div>
+                    </div>
+                </div>
+                <!--MPG-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-2 g-1">
+                        <div class="col-1">
+                            <i class="fa-solid bi-fuel-pump-diesel-fill featuresStyle"></i>
+                        </div>
+                        
+                        <div class="col-11" style="padding-left:40px">
+                            <h4>MPG</h4>
+                            <p class="text-muted fs-6">22 MPG</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Fuel Type-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="fa-solid fa-droplet featuresStyle"></i>
+                        </div>                       
+                        <div class="col-11" style="padding-left: 40px;">
+                            <h4>Fuel Type</h4>
+                            <p class="text-muted fs-6">Gasoline</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Right Row-->
+            <div class="col-6 pt-4 position-relative">
+                <!--Drivetrain-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="driveTrain svg"></i>
+                        </div>
+
+                        <div class="col-11" style="padding-left:40px">
+                            <h3>DriveTrain</h3>
+                            <p class="text-muted fs-6">@Model.Product.Miles.ToString("n")</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Interior Color-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="car-seat svg"></i>
+                        </div>
+
+                        <div class="col-11" style="padding-left:40px">
+                            <h3>Interior Color</h3>
+                            <p class="text-muted fs-6">Gray</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Engine-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1 avg">
+                            <i class="engine svg"></i>
+                        </div>
+
+                        <div class="col-11" style="padding-left:40px">
+                            <h4>Engine</h4>
+                            <p class="text-muted fs-6">200 hp 3.8L V6</p>
+                        </div>
+                    </div>
+                </div>
+                <!--Transmission-->
+                <div class="row pb-2">
+                    <div class="col-12 d-flex fs-1 g-1">
+                        <div class="col-1">
+                            <i class="transmission svg"></i>
+                        </div>
+                        <div class="col-11" style="padding-left: 40px;">
+                            <h4>Transmission</h4>
+                            <p class="text-muted fs-6">Automatic</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--More Details-->
+        <div class="row pt-3">
+            <!--Extra Details-->
+            <div class="col-6">
+                <!--Overview-->
+                <div class="dropdown">
+                    <button class="button-toggler border-1 w-100 bg-light border-light" type="button" data-bs-toggle="collapse" data-bs-target=".overview-collapse">
+                        <span class="h3 float-start">Overview</span><i class="bi bi-caret-down-fill float-end p-1"></i>
+                    </button>
+                    <div class="collapse overview-collapse order-lg-1 pt-2 paraStyle">
+                        <p><span class="fw-bold">Make</span>: @Model.Product.Make</p>
+                        <p><span class="fw-bold">Model</span>: @Model.Product.Model</p>
+                        <p><span class="fw-bold">Year</span>: @Model.Product.Year</p>
+                        <p><span class="fw-bold">Trim</span>: 2LT Sedan FWD</p>
+                        <p><span class="fw-bold">Body Type</span>: @Model.Product.Category.Name</p>
+                        <p><span class="fw-bold">Exterior Color</span>: Red</p>
+                    </div>
+                </div>
+                <!--Fuel Economy-->
+                <div class="dropdown text-lg-start pt-3">
+                    <button class="button-toggler border-1 w-100 bg-light border-light" type="button" data-bs-toggle="collapse" data-bs-target=".fuel-collapse">
+                        <span class="h3 float-start">Fuel Economy</span><i class="bi bi-caret-down-fill float-end p-1"></i>
+                    </button>
+                    <div class="collapse fuel-collapse order-lg-1 pt-2 paraStyle">
+                        <p><span class="fw-bold">Tank Size</span>: 12 Gal</p>
+                        <p><span class="fw-bold">Combined Gas Mileage</span>: 29 MPG</p>
+                        <p><span class="fw-bold">City Gas Milage</span>: 25 MPG</p>
+                        <p><span class="fw-bold">Highway Gas Milage</span>: 35 MPG</p>
+                        <p><span class="fw-bold">Fuel Type</span>: Gasoline</p>
+                    </div>
+                </div>
+                <!--Performance-->
+                <div class="dropdown pt-3">
+                    <button class="button-toggler border-1 w-100 bg-light border-light" type="button" data-bs-toggle="collapse" data-bs-target=".per-collapse">
+                        <span class="h3 float-start">Performance</span><i class="bi bi-caret-down-fill float-end p-1"></i>
+                    </button>
+                    <div class="collapse per-collapse order-lg-1 pt-2 paraStyle">
+                        <p><span class="fw-bold">Transmission</span>: Automatic</p>
+                        <p><span class="fw-bold">Drivetrain</span>: Front-Wheel Drive</p>
+                        <p><span class="fw-bold">Engine</span>: 134 hp 1.8L 14</p>
+                        <p><span class="fw-bold">Horsepower</span>: 154 hp</p>
+                    </div>
+                </div>
+                <!--Measurements-->
+                <div class="dropdown pt-3">
+                    <button class="button-toggler border-1 w-100 bg-light border-light" type="button" data-bs-toggle="collapse" data-bs-target=".measure-collapse">
+                        <p class="h3 float-start">Measurements</p><i class="bi bi-caret-down-fill float-end p-1"></i>
+                    </button>
+                    <div class="collapse measure-collapse order-lg-1 pt-2 paraStyle">
+                        <p><span class="fw-bold">Doors</span>: 4 doors</p>
+                        <p><span class="fw-bold">Front Legroom</span>: 41 in</p>
+                        <p><span class="fw-bold">Back Legroom</span>: 34 in</p>
+                        <p><span class="fw-bold">Cargo Volume</span>: 15 cu ft</p>
+                    </div>
+                </div>
+            </div>
+
+            <!--Car History-->
+            <div class="col-6">
+                <h3>History</h3>
+                <!--issues-->
+                <div class="row pb-2 d-flex flex-row pt-3">
+                    <div class="col-1">
+                        <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                    </div>
+                    <div class="col-11">
+                        <h5>Clean Title</h5>
+                        <p class="text-muted" style="font-size: 15px;">No issues reported.</p>
+                    </div>
+                </div>
+                <!--Accident-->
+                <div class="row pb-2 d-flex flex-row">
+                    <div class="col-1">
+                        <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                    </div>
+                    <div class="col-11">
+                        <h5>0 accidents reported</h5>
+                        <p class="text-muted" style="font-size: 15px;">No accidents or damage reported</p>
+                    </div>
+                </div>
+                <!--Ownder History-->
+                <div class="row pb-2 d-flex flex-row">
+                    <div class="col-1">
+                        <i class="bi bi-exclamation-circle-fill fs-5 text-warning"></i>
+                    </div>
+                    <div class="col-11">
+                        <h5>2 previous owners</h5>
+                        <p class="text-muted" style="font-size: 15px;">Vehicle has 2 previous owners</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

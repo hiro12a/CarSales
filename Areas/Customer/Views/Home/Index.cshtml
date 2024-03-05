@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Product>
+﻿@{
+    ViewData["Title"] = "Home";
+}
+<div class="overflow-visible" style="font-family:sans-serif">
+    <!--Front cover-->
+    <div class="main py-5">
+        <div class="container py-5">
+            <div class="row py-5">
+                <div class="col-lg-6 h-100 py-3 text-dark">
+                    <!--Centers it-->
+                    <h3 class="fw-bold">Shop for Cars</h3>
+                    <h1 class="fw-bold">New/Used Cars</h1>
+                    <a class="btnShop btn" asp-controller="Home" asp-action="Shop">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Collections-->
+    <div class="container border-bottom bg-white" style="font-size:12px;box-shadow: 0 8px 6px -6px gray;">
+        <!--The first row and col class will make sure all the items are in a single line-->
+        <div class="row">
+            <div class="col">
+                <!--This makes sure that the icon will be on the left and the text on the right-->
+                <div class="row pt-4">
+                    <div class="col-md-2">
+                        <i class="bi bi-car-front" style="font-size:30px;color:#f63e4e"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h5 class="fw-bold text-uppercase" style="color:#f63e4e">FREE RETURNS</h5>
+                        <p>Free shipping and handling on all US orders on cars above $20,000</p>
+                    </div>
+                </div>
+            </div>
+            <!--Border start creates a horizontal line at the start-->
+            <div class="col border-start">
+                <!--This makes sure that the icon will be on the left and the text on the right-->
+                <div class="row pt-4">
+                    <div class="col-md-2">
+                        <i class="bi bi-cash-coin" style="font-size:30px; color:#f63e4e;"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h5 class="fw-bold text-uppercase" style="color:#f63e4e">30 Day Return</h5>
+                        <p>Simply return it within 30 days for an equivalent exchange or a full refund</p>
+                    </div>
+                </div>
+            </div>
+            <!--Border start creates a horizontal line at the start-->
+            <div class="col border-start">
+                <!--This makes sure that the icon will be on the left and the text on the right-->
+                <div class="row pt-4">
+                    <div class="col-md-2">
+                        <i class="bi bi-file-lock" style="font-size:30px;color:#f63e4e"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <h5 class="fw-bold text-uppercase" style="color:#f63e4e">Hassle Free</h5>
+                        <p>Don't talk to our salesperson if you don't want to and immediately buy the car</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Products-->
+    <div class="products pb-5">
+        <div class="container">
+            <div class="row py-3  text-center">
+                <div class="col-lg-6 m-auto">
+                    <h1 class="text-uppercase">New Arrivals</h1>
+                    <div class="line1"></div>                   
+                </div>
+            </div>
+            <div class="row">
+            <!--Display the image-->
+                @foreach (var product in Model)
+                {
+                <div class="col-lg-4 pb-3">
+                    <div class="card p-2">
+                        <div class="card-body">
+                            <!--Get the image and display it-->
+                            @if (product.Images != null && product.Images.Count > 0)
+                            {
+                                <img src="@product.Images.FirstOrDefault().ImageUrl" class="card-img-top rounded" style="width:100%">
+                            }                               
+                            else
+                            {
+                                <!--Does not have an image so use the placeholder-->
+                            <img src="https://placehold.co/500x600/png" class="card-img-top rounded" />
+                            }
+
+                            <!--Product Details-->
+                            <h4 class="pt-3 head1">@product.Year @product.Make @product.Model</h4>
+                            <p class="per1">@product.Miles.ToString("n") Mi.</p>
+                            <h4 class="head1 text-success pb-2">@product.Price.ToString("c")</h4>
+
+                            <!--Details-->
+                            <a class="btnDetails btn" asp-action="Details" asp-route-productId="@product.Id">Check Details</a>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            <div class="row pb-3">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <a class="btnMore btn" href="@Url.Action("Shop","Home","Customer")" style="width:100px">All Cars</a>
+                </div>
+            </div>
+            <div class="line1" style="width: 100%"></div>
+        </div>
+    </div>
+
+    <!--Extra Contents-->
+    <div class="contents py-5">
+        <div class="container py-5">
+            <!--D flex and justify content makes the box go to the right end-->
+            <div class="row d-flex py-5  justify-content-end">
+                <div class="col-lg-6 d-flex justify-content-end makes">
+                    <div class="card w-50" style="width: 40px">
+                        <div class="card-body">
+                            <h4 class="fw-bold">Let's make you a happy car owner</h4>
+                            <p style="color:gray">
+                                When you buy from us, it's a win-win. You don't have to
+                                go through the hassle of talking to a salesperson and just go
+                                off with your brand new car. Furthermore, you get a 30 day
+                                money-back.
+                            </p>
+
+                            <!--Buttons-->
+                            <div class="pb-2">
+                                <a class="btnContent btn w-100" asp-area="Customer" asp-controller="Home" asp-action="Shop">Shop for Cars</a>
+                            </div>
+                            <div>
+                                <a class="btnLearn btn w-100 bg-transparent text-black" asp-area="Customer" asp-controller="Home" asp-action="About">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
