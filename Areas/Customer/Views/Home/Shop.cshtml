@@ -5,7 +5,6 @@
     var minivan = "text-black";
     var suv = "text-black";
     var sedan = "text-black";
-    var hatchback = "text-black";
     var all = "text-black";
 
     switch (type)
@@ -21,9 +20,6 @@
             break;
         case "sedan":
             sedan = "active text-white bg-primary";
-            break;
-        case "hatchback":
-            hatchback = "active text-white bg-primary";
             break;
         default:
             all = "active text-white bg-primary";
@@ -57,9 +53,6 @@
                     </a>
                     <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="suv">
                         <li class="list-group-item @suv">SUV</li>
-                    </a>
-                    <a style="text-decoration:none" asp-controller="Home" asp-action="Shop" asp-route-type="van">
-                    <li class="list-group-item @hatchback">Hatchback</li>
                     </a>
                 </ul>
             </div>
