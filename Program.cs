@@ -8,6 +8,7 @@ using Google.Cloud.SecretManager.V1;
 using Microsoft.AspNetCore.Identity;
 using CarSales.Utility;
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,11 +33,36 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add Razor pages support
 builder.Services.AddRazorPages();
 
-// Configure DbContext
-var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+var credential = GoogleCredential.FromFile("ksortreeservice-414322-4a6b6e064aa0");
+var client = new SecretManagerServiceClientBuilder
+{
+    Credential = credential
+}.Build();
 
+// Configure DbContext
+async Task ConfigureDbContext(IServiceProvider services)
+{
+    var secretService = services.GetRequiredService<SecretManagerService>();
+    string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
+    string secretId = "AIVEN"; // The name of your secret
+
+    try
+    {
+        string connectionString = builder.Configuration.GetConnectionString("DefaultConnections");
+
+        // Use the secret value to configure the database connection
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(connectionString));
+    }
+    catch (Exception ex)
+    {
+        // Handle exceptions when retrieving secrets
+        Console.WriteLine($"Error retrieving secret: {ex.Message}");
+    }
+}
+
+// First configure DbContext asynchronously
+await ConfigureDbContext(builder.Services.BuildServiceProvider());
 
 // Identity and User Management
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
