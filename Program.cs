@@ -11,21 +11,6 @@ using Google.Apis.Auth.OAuth2;
 using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configure Google Cloud Secret Manager Client
-string credentialPath = "DataAccess/ksortreeservice-414322-4a6b6e064aa0.json"; // Update to your actual path
-var credential = GoogleCredential.FromFile(credentialPath);
-
-// Create the Secret Manager client with the credentials
-var secretManagerClient = new SecretManagerServiceClientBuilder
-{
-    // Use the credential directly with SecretManagerServiceClientBuilder
-    CredentialsPath = credentialPath
-}.Build();
-
-// Register the SecretManagerServiceClient
-builder.Services.AddSingleton(secretManagerClient);
-
 // Add Stripe configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
