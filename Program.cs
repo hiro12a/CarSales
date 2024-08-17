@@ -7,13 +7,24 @@ using CarSales.DataAccess.Repository.IRepository;
 using Google.Cloud.SecretManager.V1;
 using Microsoft.AspNetCore.Identity;
 using CarSales.Utility;
-using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register the SecretManagerService
-builder.Services.AddSingleton<SecretManagerService>();
+// Configure Google Cloud Secret Manager Client
+string credentialPath = "DataAccess/ksortreeservice-414322-4a6b6e064aa0.json"; // Update to your actual path
+var credential = GoogleCredential.FromFile(credentialPath);
+
+// Create the Secret Manager client with the credentials
+var secretManagerClient = new SecretManagerServiceClientBuilder
+{
+    // Use the credential directly with SecretManagerServiceClientBuilder
+    CredentialsPath = credentialPath
+}.Build();
+
+// Register the SecretManagerServiceClient
+builder.Services.AddSingleton(secretManagerClient);
 
 // Add Stripe configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
@@ -33,22 +44,26 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add Razor pages support
 builder.Services.AddRazorPages();
 
-var credential = GoogleCredential.FromFile("ksortreeservice-414322-4a6b6e064aa0");
-var client = new SecretManagerServiceClientBuilder
-{
-    Credential = credential
-}.Build();
-
 // Configure DbContext
 async Task ConfigureDbContext(IServiceProvider services)
 {
-    var secretService = services.GetRequiredService<SecretManagerService>();
+    var secretService = services.GetRequiredService<SecretManagerServiceClient>();
     string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
     string secretId = "AIVEN"; // The name of your secret
 
     try
     {
-        string connectionString = builder.Configuration.GetConnectionString("DefaultConnections");
+        // Build the secret version name
+        var secretVersionName = new SecretVersionName(projectId, secretId, "latest");
+
+        // Retrieve the secret value
+        var secretResponse = await secretService.AccessSecretVersionAsync(new AccessSecretVersionRequest
+        {
+            SecretVersionName = secretVersionName
+        });
+
+        // Get the secret value as a string
+        string connectionString = secretResponse.Payload.Data.ToStringUtf8();
 
         // Use the secret value to configure the database connection
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
