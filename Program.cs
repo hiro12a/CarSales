@@ -42,7 +42,7 @@ async Task ConfigureDbContext(IServiceProvider services)
     try
     {
         var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-        services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
     }
     catch (Exception ex)
