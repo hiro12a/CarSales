@@ -33,27 +33,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddRazorPages();
 
 // Configure DbContext
-async Task ConfigureDbContext(IServiceProvider services)
-{
-    var secretService = services.GetRequiredService<SecretManagerService>();
-    string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
-    string secretId = "AIVEN"; // The name of your secret
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
-    try
-    {
-        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString));
-    }
-    catch (Exception ex)
-    {
-        // Handle exceptions when retrieving secrets
-        Console.WriteLine($"Error retrieving secret: {ex.Message}");
-    }
-}
-
-// First configure DbContext asynchronously
-await ConfigureDbContext(builder.Services.BuildServiceProvider());
 
 // Identity and User Management
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -73,16 +56,8 @@ StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey"
 
 var app = builder.Build();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Logging.AddDebug();
-
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
