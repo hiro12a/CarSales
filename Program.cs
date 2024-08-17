@@ -11,6 +11,8 @@ using Google.Apis.Auth.OAuth2;
 using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 // Add Stripe configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
@@ -29,40 +31,27 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add Razor pages support
 builder.Services.AddRazorPages();
 
-// Configure DbContext
-async Task ConfigureDbContext(IServiceProvider services)
+// Configure and register the SecretManagerService
+builder.Services.AddSingleton<SecretManagerService>();
+
+// Configure the DbContext by fetching the secret asynchronously
+var secretService = builder.Services.BuildServiceProvider().GetRequiredService<SecretManagerService>();
+string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
+string secretId = "AIVEN"; // The name of your secret
+
+try
 {
-    var secretService = services.GetRequiredService<SecretManagerServiceClient>();
-    string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
-    string secretId = "AIVEN"; // The name of your secret
+    string connectionString = await secretService.GetSecretAsync(projectId, secretId);
 
-    try
-    {
-        // Build the secret version name
-        var secretVersionName = new SecretVersionName(projectId, secretId, "latest");
-
-        // Retrieve the secret value
-        var secretResponse = await secretService.AccessSecretVersionAsync(new AccessSecretVersionRequest
-        {
-            SecretVersionName = secretVersionName
-        });
-
-        // Get the secret value as a string
-        string connectionString = secretResponse.Payload.Data.ToStringUtf8();
-
-        // Use the secret value to configure the database connection
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString));
-    }
-    catch (Exception ex)
-    {
-        // Handle exceptions when retrieving secrets
-        Console.WriteLine($"Error retrieving secret: {ex.Message}");
-    }
+    // Register the DbContext with the retrieved connection string
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseNpgsql(connectionString));
 }
-
-// First configure DbContext asynchronously
-await ConfigureDbContext(builder.Services.BuildServiceProvider());
+catch (Exception ex)
+{
+    // Handle exceptions when retrieving secrets
+    Console.WriteLine($"Error retrieving secret: {ex.Message}");
+}
 
 // Identity and User Management
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
