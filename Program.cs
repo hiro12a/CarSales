@@ -41,10 +41,8 @@ async Task ConfigureDbContext(IServiceProvider services)
 
     try
     {
-        string connectionString = await secretService.GetSecretAsync(projectId, secretId);
-
-        // Use the secret value to configure the database connection
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(connectionString));
     }
     catch (Exception ex)
