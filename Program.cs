@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add Stripe configuration
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
@@ -31,27 +30,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add Razor pages support
 builder.Services.AddRazorPages();
 
-// Configure and register the SecretManagerService
-builder.Services.AddSingleton<SecretManagerService>();
-
-// Configure the DbContext by fetching the secret asynchronously
-var secretService = builder.Services.BuildServiceProvider().GetRequiredService<SecretManagerService>();
-string projectId = "ksortreeservice-414322"; // Replace with your actual project ID
-string secretId = "AIVEN"; // The name of your secret
-
-try
-{
-    string connectionString = await secretService.GetSecretAsync(projectId, secretId);
-
-    // Register the DbContext with the retrieved connection string
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseNpgsql(connectionString));
-}
-catch (Exception ex)
-{
-    // Handle exceptions when retrieving secrets
-    Console.WriteLine($"Error retrieving secret: {ex.Message}");
-}
+// Register the DbContext with the retrieved connection string
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnections")));
 
 // Identity and User Management
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
